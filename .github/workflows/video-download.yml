@@ -1,4 +1,4 @@
-name: Run Python
+name: video download
 run-name: Download Youtube Video
 
 on:
@@ -15,15 +15,10 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - name: Install dependencies
-      run: |
-        sudo wget https://yt-dl.org/downloads/latest/youtube-dl -O /usr/local/bin/youtube-dl
-        sudo chmod a+rx /usr/local/bin/youtube-dl
-
     - name: Download
       run: |
         mkdir -p MyVideos
-        youtube-dl --verbose -o 'MyVideos/${{ inputs.youtube-title }}.%(ext)s' ${{ inputs.youtube-url }}
+        sudo wget ${{ inputs.youtube-url }} -O MyVideos/${{ inputs.youtube-title }}.mp4
 
     - name: Upload WeTransfer
       id: wetransfer
