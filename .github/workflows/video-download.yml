@@ -10,6 +10,7 @@ on:
       video-url:
         description: "video url"
         required: true
+        default: "video.mp4"
 
 jobs:
   build:
@@ -18,7 +19,7 @@ jobs:
     - name: Download
       run: |
         mkdir -p MyVideos
-        sudo wget --no-check-certificate "${{ inputs.video-url }}" -O MyVideos/${{ inputs.video-title }}.mp4
+        sudo wget --no-check-certificate "${{ inputs.video-url }}" -O MyVideos/${{ inputs.video-title }}
 
     - name: Upload WeTransfer
       id: wetransfer
@@ -29,7 +30,7 @@ jobs:
         echo "::warning file=wetransfer.com::$(cat wetransfer.log | grep https)"
         echo "影片名称：《${{ inputs.video-title }}》" >> body.md
         echo "" >> body.md
-        echo "下载地址:🔗 [WeTransfer]($(cat wetransfer.log | grep https | cut -f3 -d" "))" >> body.md
+        echo "下载地址:🔗 [WeTransfer]($(cat wetransfer.log | grep https | cut -f3 -d" ")){target="_blank"}" >> body.md
         echo "release_tag=$(date +"%Y.%m.%d-%H%M")" >> $GITHUB_OUTPUT
 
     - name: Release
