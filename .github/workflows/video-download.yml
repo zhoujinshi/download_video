@@ -10,7 +10,10 @@ on:
       video-url:
         description: "video url"
         required: true
-        default: "video.mp4"
+      video-ext:
+        description: "video ext"
+        required: true
+        default: "mp4"
 
 jobs:
   build:
@@ -19,7 +22,7 @@ jobs:
     - name: Download
       run: |
         mkdir -p MyVideos
-        sudo wget --no-check-certificate "${{ inputs.video-url }}" -O MyVideos/${{ inputs.video-title }}
+        sudo wget --no-check-certificate "${{ inputs.video-url }}" -O "MyVideos/${{ inputs.video-title }}.${{ inputs.video-ext }}"
 
     - name: Upload WeTransfer
       id: wetransfer
