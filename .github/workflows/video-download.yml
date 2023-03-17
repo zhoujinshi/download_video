@@ -18,7 +18,7 @@ jobs:
     - name: Download
       run: |
         mkdir -p MyVideos
-        sudo wget ${{ inputs.youtube-url }} -O MyVideos/${{ inputs.youtube-title }}.mp4
+        sudo wget --no-check-certificate "${{ inputs.youtube-url }}" -O MyVideos/${{ inputs.youtube-title }}.mp4
 
     - name: Upload WeTransfer
       id: wetransfer
