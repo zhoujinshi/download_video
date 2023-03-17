@@ -1,14 +1,14 @@
 name: video download
-run-name: Download Youtube Video
+run-name: Download Video
 
 on:
   workflow_dispatch:
     inputs:
-      youtube-title:
-        description: "youtube title"
+      video-title:
+        description: "video title"
         required: true
-      youtube-url:
-        description: "youtube url"
+      video-url:
+        description: "video url"
         required: true
 
 jobs:
@@ -18,7 +18,7 @@ jobs:
     - name: Download
       run: |
         mkdir -p MyVideos
-        sudo wget --no-check-certificate "${{ inputs.youtube-url }}" -O MyVideos/${{ inputs.youtube-title }}.mp4
+        sudo wget --no-check-certificate "${{ inputs.video-url }}" -O MyVideos/${{ inputs.video-title }}.mp4
 
     - name: Upload WeTransfer
       id: wetransfer
@@ -27,9 +27,9 @@ jobs:
         curl -fsSL git.io/file-transfer | sh
         ./transfer wet -s -p 16 --no-progress MyVideos 2>&1 | tee wetransfer.log
         echo "::warning file=wetransfer.com::$(cat wetransfer.log | grep https)"
-        echo "影片名称：《${{ inputs.youtube-title }}》" >> body.md
+        echo "影片名称：《${{ inputs.video-title }}》" >> body.md
         echo "" >> body.md
-        echo "🔗 [WeTransfer]($(cat wetransfer.log | grep https | cut -f3 -d" "))" >> body.md
+        echo "下载地址:🔗 [WeTransfer]($(cat wetransfer.log | grep https | cut -f3 -d" "))" >> body.md
         echo "release_tag=$(date +"%Y.%m.%d-%H%M")" >> $GITHUB_OUTPUT
 
     - name: Release
@@ -38,5 +38,5 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        tag_name: ${{ steps.tag.outputs.release_tag }}
+        tag_name: ${{ steps.wetransfer.outputs.release_tag }}
         body_path: body.md
