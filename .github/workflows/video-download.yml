@@ -4,11 +4,11 @@ run-name: Download Video
 on:
   workflow_dispatch:
     inputs:
-      video-title:
-        description: "video title"
-        required: true
       video-url:
         description: "video url"
+        required: true
+      video-title:
+        description: "video title"
         required: true
       video-ext:
         description: "video ext"
