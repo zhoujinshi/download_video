@@ -28,8 +28,8 @@ jobs:
       id: tag
       if: (!cancelled())
       run: |
-        echo "文件名称：《${{ inputs.video-title }}》" >> body.md
-        echo "" >> body.md
+        echo "文件名称：《${{ inputs.title }}》" >> body.md
+        echo "通过第三方加速下载：https://ghproxy.com/" >> body.md
         echo "release_tag=$(date +"%Y.%m.%d-%H%M")" >> $GITHUB_OUTPUT
 
     - name: 上传固件到release
