@@ -19,28 +19,40 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - name: Download
+    - name: 下载
       run: |
-        mkdir -p MyVideos
-        sudo wget --no-check-certificate "${{ inputs.url }}" -O "MyVideos/${{ inputs.title }}.${{ inputs.ext }}"
+        mkdir -p MyFiles
+        sudo wget --no-check-certificate "${{ inputs.url }}" -O "MyFiles/${{ inputs.title }}.${{ inputs.ext }}"
 
-    - name: Upload Wenshushu
-      id: Wenshushu
+    - name: 创建tag
+      id: tag
       if: (!cancelled())
       run: |
-        curl -fsSL git.io/file-transfer | sh
-        ./transfer wss --no-progress MyVideos 2>&1 | tee Wenshushu.log
-        echo "::warning file=Wenshushu.cn::$(cat Wenshushu.log | grep https)"
         echo "文件名称：《${{ inputs.video-title }}》" >> body.md
         echo "" >> body.md
-        echo "下载地址:🔗 [Wenshushu]($(cat Wenshushu.log | grep https | cut -f3 -d" "))" >> body.md
         echo "release_tag=$(date +"%Y.%m.%d-%H%M")" >> $GITHUB_OUTPUT
 
-    - name: Release
+    - name: 上传固件到release
       uses: softprops/action-gh-release@v1
       if: (!cancelled())
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        tag_name: ${{ steps.Wenshushu.outputs.release_tag }}
+        tag_name: ${{ steps.tag.outputs.release_tag }}
         body_path: body.md
+        files: MyFiles/*
+
+    - name: 移除老的 workflow runs
+      uses: zhoujinshi/delete-workflow-runs@main
+      with:
+        retain_days: 1
+        keep_minimum_runs: 3
+
+    - name: 移除老的 Releases
+      uses: dev-drprasad/delete-older-releases@master
+      if: (!cancelled())
+      with:
+        keep_latest: 3
+        delete_tags: true
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
