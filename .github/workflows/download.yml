@@ -1,16 +1,16 @@
 name: download
-run-name: Download
+run-name: Download ${{ inputs.title }}.${{ inputs.ext }}
 
 on:
   workflow_dispatch:
     inputs:
-      video-url:
+      url:
         description: "url"
         required: true
-      video-title:
+      title:
         description: "title"
         required: true
-      video-ext:
+      ext:
         description: "ext"
         required: true
         default: "mp4"
@@ -22,7 +22,7 @@ jobs:
     - name: Download
       run: |
         mkdir -p MyVideos
-        sudo wget --no-check-certificate "${{ inputs.video-url }}" -O "MyVideos/${{ inputs.video-title }}.${{ inputs.video-ext }}"
+        sudo wget --no-check-certificate "${{ inputs.url }}" -O "MyVideos/${{ inputs.title }}.${{ inputs.ext }}"
 
     - name: Upload Quickfile
       id: Quickfile
