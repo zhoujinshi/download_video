@@ -1,17 +1,17 @@
-name: video download
-run-name: Download Video
+name: download
+run-name: Download
 
 on:
   workflow_dispatch:
     inputs:
       video-url:
-        description: "video url"
+        description: "url"
         required: true
       video-title:
-        description: "video title"
+        description: "title"
         required: true
       video-ext:
-        description: "video ext"
+        description: "ext"
         required: true
         default: "mp4"
 
@@ -31,7 +31,7 @@ jobs:
         curl -fsSL git.io/file-transfer | sh
         ./transfer wet -s -p 16 --no-progress MyVideos 2>&1 | tee wetransfer.log
         echo "::warning file=wetransfer.com::$(cat wetransfer.log | grep https)"
-        echo "影片名称：《${{ inputs.video-title }}》" >> body.md
+        echo "文件名称：《${{ inputs.video-title }}》" >> body.md
         echo "" >> body.md
         echo "下载地址:🔗 [WeTransfer]($(cat wetransfer.log | grep https | cut -f3 -d" "))" >> body.md
         echo "release_tag=$(date +"%Y.%m.%d-%H%M")" >> $GITHUB_OUTPUT
