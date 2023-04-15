@@ -25,11 +25,11 @@ jobs:
         sudo wget --no-check-certificate "${{ inputs.url }}" -O "MyVideos/${{ inputs.title }}.${{ inputs.ext }}"
 
     - name: Upload Quickfile
-      id: Quickfile
+      id: Wenshushu
       if: (!cancelled())
       run: |
         curl -fsSL git.io/file-transfer | sh
-        ./transfer qf -s -p 16 --no-progress MyVideos 2>&1 | tee wetransfer.log
+        ./transfer wss -p 16 --no-progress MyVideos 2>&1 | tee wetransfer.log
         echo "::warning file=wetransfer.com::$(cat wetransfer.log | grep https)"
         echo "文件名称：《${{ inputs.video-title }}》" >> body.md
         echo "" >> body.md
@@ -42,5 +42,5 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        tag_name: ${{ steps.Quickfile.outputs.release_tag }}
+        tag_name: ${{ steps.Wenshushu.outputs.release_tag }}
         body_path: body.md
